@@ -1,67 +1,42 @@
 pragma solidity ^0.7.0;
 
-import "./ENS.sol";
-import "./ENSRegistry.sol";
-
 /**
  * The ENS registry contract.
  */
-contract ENSRegistryWithFallback is ENSRegistry {
+contract ENSRegistryWithFallback {
+    // Replace with actual contract addresses
+    address public oldAddress;
 
-    ENS public old;
-
-    /**
-     * @dev Constructs a new ENS registrar.
-     */
-    constructor(ENS _old) public ENSRegistry() {
-        old = _old;
+    constructor(address _old) {
+        oldAddress = _old;
     }
 
     /**
-     * @dev Returns the address of the resolver for the specified node.
-     * @param node The specified node.
-     * @return address of the resolver.
+     * Returns the address of the resolver for the specified node.
      */
-    function resolver(bytes32 node) public override view returns (address) {
-        if (!recordExists(node)) {
-            return old.resolver(node);
-        }
-
-        return super.resolver(node);
+    function resolver(bytes32 node) public view returns (address) {
+        // Replace with Tron-specific logic
+        // Example: Call a function on the old contract using oldAddress
     }
 
     /**
-     * @dev Returns the address that owns the specified node.
-     * @param node The specified node.
-     * @return address of the owner.
+     * Returns the address that owns the specified node.
      */
-    function owner(bytes32 node) public override view returns (address) {
-        if (!recordExists(node)) {
-            return old.owner(node);
-        }
-
-        return super.owner(node);
+    function owner(bytes32 node) public view returns (address) {
+        // Replace with Tron-specific logic
+        // Example: Call a function on the old contract using oldAddress
     }
 
     /**
-     * @dev Returns the TTL of a node, and any records associated with it.
-     * @param node The specified node.
-     * @return ttl of the node.
+     * Returns the TTL of a node, and any records associated with it.
      */
-    function ttl(bytes32 node) public override view returns (uint64) {
-        if (!recordExists(node)) {
-            return old.ttl(node);
-        }
-
-        return super.ttl(node);
+    function ttl(bytes32 node) public view returns (uint64) {
+        // Replace with Tron-specific logic
+        // Example: Call a function on the old contract using oldAddress
     }
 
-    function _setOwner(bytes32 node, address owner) internal override {
-        address addr = owner;
-        if (addr == address(0x0)) {
-            addr = address(this);
-        }
-
-        super._setOwner(node, addr);
+    function _setOwner(bytes32 node, address owner) internal {
+        // Replace with Tron-specific logic
+        // Example: Set owner on Tron contract
     }
 }

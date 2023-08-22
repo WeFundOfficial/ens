@@ -1,17 +1,17 @@
 pragma solidity ^0.7.0;
 
-import "./ENS.sol";
+import "trc20/ENS.sol";
 
 /**
  * A registrar that allocates subdomains to the first person to claim them, but
  * expires registrations a fixed period after they're initially claimed.
  */
 contract TestRegistrar {
-    uint constant registrationPeriod = 4 weeks;
+    uint256 constant registrationPeriod = 4 weeks;
 
     ENS public ens;
     bytes32 public rootNode;
-    mapping (bytes32 => uint) public expiryTimes;
+    mapping(bytes32 => uint256) public expiryTimes;
 
     /**
      * Constructor.

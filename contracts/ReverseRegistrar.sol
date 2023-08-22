@@ -1,6 +1,6 @@
 pragma solidity ^0.7.0;
 
-import "./ENS.sol";
+import "trc20/ENS.sol";
 
 abstract contract NameResolver {
     function setName(bytes32 node, string memory name) public virtual;
