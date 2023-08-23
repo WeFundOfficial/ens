@@ -9,6 +9,7 @@ import 'hardhat-abi-exporter'
 import 'hardhat-contract-sizer'
 import 'hardhat-deploy'
 import 'hardhat-gas-reporter'
+import '@nomicfoundation/hardhat-verify'
 import { HardhatUserConfig } from 'hardhat/config'
 import { promisify } from 'util'
 
@@ -102,6 +103,16 @@ const config: HardhatUserConfig = {
           },
         },
       },
+      // for Legacy contract
+      {
+        version: '0.5.17',
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
     ],
   },
   abiExporter: {
@@ -135,6 +146,14 @@ const config: HardhatUserConfig = {
         artifacts: [archivedDeploymentPath],
       },
     ],
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY,
+  },
+  verify: {
+    etherscan: {
+      apiKey: process.env.ETHERSCAN_API_KEY,
+    },
   },
 }
 

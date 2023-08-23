@@ -40,8 +40,8 @@ contract ETHRegistrarController is
     using Address for address;
 
     uint256 public constant MIN_REGISTRATION_DURATION = 28 days;
-    bytes32 private constant ETH_NODE =
-        0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
+    bytes32 private constant TRX_NODE =
+        0x52f0812dc843a11a98fe1f33f71f94232edb08fb1cdf8a3d04925482997fda1a;
     uint64 private constant MAX_EXPIRY = type(uint64).max;
     BaseRegistrarImplementation immutable base;
     IPriceOracle public immutable prices;
@@ -270,8 +270,8 @@ contract ETHRegistrarController is
         bytes32 label,
         bytes[] calldata data
     ) internal {
-        // use hardcoded .eth namehash
-        bytes32 nodehash = keccak256(abi.encodePacked(ETH_NODE, label));
+        // use hardcoded .trx namehash
+        bytes32 nodehash = keccak256(abi.encodePacked(TRX_NODE, label));
         Resolver resolver = Resolver(resolverAddress);
         resolver.multicallWithNodeCheck(nodehash, data);
     }
@@ -285,7 +285,7 @@ contract ETHRegistrarController is
             msg.sender,
             owner,
             resolver,
-            string.concat(name, ".eth")
+            string.concat(name, ".trx")
         );
     }
 }

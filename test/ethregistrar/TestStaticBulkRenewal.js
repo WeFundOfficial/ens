@@ -14,8 +14,8 @@ const sha3 = require('web3-utils').sha3
 const toBN = require('web3-utils').toBN
 const { exceptions } = require('../test-utils')
 
-const ETH_LABEL = sha3('eth')
-const ETH_NAMEHASH = namehash.hash('eth')
+const TRX_LABEL = sha3('trx')
+const TRX_NAMEHASH = namehash.hash('trx')
 
 contract('StaticBulkRenewal', function (accounts) {
   let ens
@@ -35,7 +35,7 @@ contract('StaticBulkRenewal', function (accounts) {
     // Create a registry
     ens = await ENS.new()
     // Create a base registrar
-    baseRegistrar = await BaseRegistrar.new(ens.address, namehash.hash('eth'), {
+    baseRegistrar = await BaseRegistrar.new(ens.address, namehash.hash('trx'), {
       from: ownerAccount,
     })
 
@@ -94,16 +94,16 @@ contract('StaticBulkRenewal', function (accounts) {
     // Create the bulk registration contract
     staticBulkRenewal = await StaticBulkRenewal.new(controller.address)
 
-    // Configure a resolver for .eth and register the controller interface
-    // then transfer the .eth node to the base registrar.
+    // Configure a resolver for .trx and register the controller interface
+    // then transfer the .trx node to the base registrar.
     await ens.setSubnodeRecord(
       '0x0',
-      ETH_LABEL,
+      TRX_LABEL,
       ownerAccount,
       resolver.address,
       0,
     )
-    await ens.setOwner(ETH_NAMEHASH, baseRegistrar.address)
+    await ens.setOwner(TRX_NAMEHASH, baseRegistrar.address)
 
     // Register some names
     for (const name of ['test1', 'test2', 'test3']) {

@@ -62,9 +62,9 @@ describe('BytesUtils', () => {
       )
     })
 
-    it('Hashes .eth correctly', async () => {
-      expect(await BytesUtils.namehash(encodeName('eth'), 0)).to.equal(
-        namehash('eth'),
+    it('Hashes .trx correctly', async () => {
+      expect(await BytesUtils.namehash(encodeName('trx'), 0)).to.equal(
+        namehash('trx'),
       )
     })
 

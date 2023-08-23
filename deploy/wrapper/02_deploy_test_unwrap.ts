@@ -4,9 +4,9 @@ import { HardhatRuntimeEnvironment } from 'hardhat/types'
 
 const TESTNET_WRAPPER_ADDRESSES = {
   goerli: [
-    '0x582224b8d4534F4749EFA4f22eF7241E0C56D4B8',
-    '0xEe1F756aCde7E81B2D8cC6aB3c8A1E2cE6db0F39',
-    '0x060f1546642E67c485D56248201feA2f9AB1803C',
+    // '0x582224b8d4534F4749EFA4f22eF7241E0C56D4B8',
+    // '0xEe1F756aCde7E81B2D8cC6aB3c8A1E2cE6db0F39',
+    // '0x060f1546642E67c485D56248201feA2f9AB1803C',
     // Add more testnet NameWrapper addresses here...
   ],
 }

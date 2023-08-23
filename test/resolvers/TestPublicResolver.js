@@ -24,7 +24,7 @@ contract('PublicResolver', function (accounts) {
   beforeEach(async () => {
     signers = await ethers.getSigners()
     account = await signers[0].getAddress()
-    node = namehash.hash('eth')
+    node = namehash.hash('trx')
     ens = await ENS.new()
     nameWrapper = await NameWrapper.new()
 
@@ -48,7 +48,7 @@ contract('PublicResolver', function (accounts) {
 
     await ReverseRegistrar.setDefaultResolver(resolver.address)
 
-    await ens.setSubnodeOwner('0x0', sha3('eth'), accounts[0], {
+    await ens.setSubnodeOwner('0x0', sha3('trx'), accounts[0], {
       from: accounts[0],
     })
   })
@@ -198,7 +198,7 @@ contract('PublicResolver', function (accounts) {
       )
     })
 
-    it('returns ETH address for coin type 60', async () => {
+    it('returns TRX address for coin type 60', async () => {
       var tx = await resolver.methods['setAddr(bytes32,address)'](
         node,
         accounts[1],
@@ -217,7 +217,7 @@ contract('PublicResolver', function (accounts) {
       )
     })
 
-    it('setting coin type 60 updates ETH address', async () => {
+    it('setting coin type 60 updates TRX address', async () => {
       var tx = await resolver.methods['setAddr(bytes32,uint256,bytes)'](
         node,
         60,
@@ -341,7 +341,7 @@ contract('PublicResolver', function (accounts) {
       )
     })
 
-    it('returns ETH address for coin type 60', async () => {
+    it('returns TRX address for coin type 60', async () => {
       var tx = await resolver.methods['setAddr(bytes32,address)'](
         node,
         accounts[1],
@@ -360,7 +360,7 @@ contract('PublicResolver', function (accounts) {
       )
     })
 
-    it('setting coin type 60 updates ETH address', async () => {
+    it('setting coin type 60 updates TRX address', async () => {
       var tx = await resolver.methods['setAddr(bytes32,uint256,bytes)'](
         node,
         60,

@@ -3,7 +3,7 @@ pragma solidity ~0.8.17;
 
 import {ERC1155Fuse, IERC165, IERC1155MetadataURI} from "./ERC1155Fuse.sol";
 import {Controllable} from "./Controllable.sol";
-import {INameWrapper, CANNOT_UNWRAP, CANNOT_BURN_FUSES, CANNOT_TRANSFER, CANNOT_SET_RESOLVER, CANNOT_SET_TTL, CANNOT_CREATE_SUBDOMAIN, CANNOT_APPROVE, PARENT_CANNOT_CONTROL, CAN_DO_EVERYTHING, IS_DOT_ETH, CAN_EXTEND_EXPIRY, PARENT_CONTROLLED_FUSES, USER_SETTABLE_FUSES} from "./INameWrapper.sol";
+import {INameWrapper, CANNOT_UNWRAP, CANNOT_BURN_FUSES, CANNOT_TRANSFER, CANNOT_SET_RESOLVER, CANNOT_SET_TTL, CANNOT_CREATE_SUBDOMAIN, CANNOT_APPROVE, PARENT_CANNOT_CONTROL, CAN_DO_EVERYTHING, IS_DOT_TRX, CAN_EXTEND_EXPIRY, PARENT_CONTROLLED_FUSES, USER_SETTABLE_FUSES} from "./INameWrapper.sol";
 import {INameWrapperUpgrade} from "./INameWrapperUpgrade.sol";
 import {IMetadataService} from "./IMetadataService.sol";
 import {ENS} from "../registry/ENS.sol";
@@ -46,10 +46,10 @@ contract NameWrapper is
     string public constant name = "NameWrapper";
 
     uint64 private constant GRACE_PERIOD = 90 days;
-    bytes32 private constant ETH_NODE =
-        0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae;
-    bytes32 private constant ETH_LABELHASH =
-        0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0;
+    bytes32 private constant TRX_NODE =
+        0x52f0812dc843a11a98fe1f33f71f94232edb08fb1cdf8a3d04925482997fda1a;
+    bytes32 private constant TRX_LABELHASH =
+        0xff5bc9d5c9e3e6ac87e67da6ad891b8532cb6220ad79e6fb2f39a42cf985a09c;
     bytes32 private constant ROOT_NODE =
         0x0000000000000000000000000000000000000000000000000000000000000000;
 
@@ -65,10 +65,10 @@ contract NameWrapper is
         registrar = _registrar;
         metadataService = _metadataService;
 
-        /* Burn PARENT_CANNOT_CONTROL and CANNOT_UNWRAP fuses for ROOT_NODE and ETH_NODE and set expiry to max */
+        /* Burn PARENT_CANNOT_CONTROL and CANNOT_UNWRAP fuses for ROOT_NODE and TRX_NODE and set expiry to max */
 
         _setData(
-            uint256(ETH_NODE),
+            uint256(TRX_NODE),
             address(0),
             uint32(PARENT_CANNOT_CONTROL | CANNOT_UNWRAP),
             MAX_EXPIRY
@@ -80,7 +80,7 @@ contract NameWrapper is
             MAX_EXPIRY
         );
         names[ROOT_NODE] = "\x00";
-        names[ETH_NODE] = "\x03eth\x00";
+        names[TRX_NODE] = "\x03trx\x00";
     }
 
     function supportsInterface(
@@ -96,7 +96,7 @@ contract NameWrapper is
 
     /**
      * @notice Gets the owner of a name
-     * @param id Label as a string of the .eth domain to wrap
+     * @param id Label as a string of the .trx domain to wrap
      * @return owner The owner of the name
      */
 
@@ -268,9 +268,9 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Wraps a .eth domain, creating a new token and sending the original ERC721 token to this contract
-     * @dev Can be called by the owner of the name on the .eth registrar or an authorised caller on the registrar
-     * @param label Label as a string of the .eth domain to wrap
+     * @notice Wraps a .trx domain, creating a new token and sending the original ERC721 token to this contract
+     * @dev Can be called by the owner of the name on the .trx registrar or an authorised caller on the registrar
+     * @param label Label as a string of the .trx domain to wrap
      * @param wrappedOwner Owner of the name in this contract
      * @param ownerControlledFuses Initial owner-controlled fuses to set
      * @param resolver Resolver contract address
@@ -289,7 +289,7 @@ contract NameWrapper is
             !registrar.isApprovedForAll(registrant, msg.sender)
         ) {
             revert Unauthorised(
-                _makeNode(ETH_NODE, bytes32(tokenId)),
+                _makeNode(TRX_NODE, bytes32(tokenId)),
                 msg.sender
             );
         }
@@ -312,14 +312,14 @@ contract NameWrapper is
     }
 
     /**
-     * @dev Registers a new .eth second-level domain and wraps it.
+     * @dev Registers a new .trx second-level domain and wraps it.
      *      Only callable by authorised controllers.
-     * @param label The label to register (Eg, 'foo' for 'foo.eth').
+     * @param label The label to register (Eg, 'foo' for 'foo.trx').
      * @param wrappedOwner The owner of the wrapped name.
      * @param duration The duration, in seconds, to register the name for.
      * @param resolver The resolver address to set on the ENS registry (optional).
      * @param ownerControlledFuses Initial owner-controlled fuses to set
-     * @return registrarExpiry The expiry date of the new name on the .eth registrar, in seconds since the Unix epoch.
+     * @return registrarExpiry The expiry date of the new name on the .trx registrar, in seconds since the Unix epoch.
      */
 
     function registerAndWrapETH2LD(
@@ -341,18 +341,18 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Renews a .eth second-level domain.
+     * @notice Renews a .trx second-level domain.
      * @dev Only callable by authorised controllers.
-     * @param tokenId The hash of the label to register (eg, `keccak256('foo')`, for 'foo.eth').
+     * @param tokenId The hash of the label to register (eg, `keccak256('foo')`, for 'foo.trx').
      * @param duration The number of seconds to renew the name for.
-     * @return expires The expiry date of the name on the .eth registrar, in seconds since the Unix epoch.
+     * @return expires The expiry date of the name on the .trx registrar, in seconds since the Unix epoch.
      */
 
     function renew(
         uint256 tokenId,
         uint256 duration
     ) external onlyController returns (uint256 expires) {
-        bytes32 node = _makeNode(ETH_NODE, bytes32(tokenId));
+        bytes32 node = _makeNode(TRX_NODE, bytes32(tokenId));
 
         uint256 registrarExpiry = registrar.renew(tokenId, duration);
 
@@ -379,7 +379,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Wraps a non .eth domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
+     * @notice Wraps a non .trx domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
      * @dev Can be called by the owner in the registry or an authorised caller in the registry
      * @param name The name to wrap, in DNS format
      * @param wrappedOwner Owner of the name in this contract
@@ -397,7 +397,7 @@ contract NameWrapper is
 
         names[node] = name;
 
-        if (parentNode == ETH_NODE) {
+        if (parentNode == TRX_NODE) {
             revert IncompatibleParent();
         }
 
@@ -417,10 +417,10 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Unwraps a .eth domain. e.g. vitalik.eth
+     * @notice Unwraps a .trx domain. e.g. vitalik.eth
      * @dev Can be called by the owner in the wrapper or an authorised caller in the wrapper
-     * @param labelhash Labelhash of the .eth domain
-     * @param registrant Sets the owner in the .eth registrar to this address
+     * @param labelhash Labelhash of the .trx domain
+     * @param registrant Sets the owner in the .trx registrar to this address
      * @param controller Sets the owner in the registry to this address
      */
 
@@ -428,11 +428,11 @@ contract NameWrapper is
         bytes32 labelhash,
         address registrant,
         address controller
-    ) public onlyTokenOwner(_makeNode(ETH_NODE, labelhash)) {
+    ) public onlyTokenOwner(_makeNode(TRX_NODE, labelhash)) {
         if (registrant == address(this)) {
             revert IncorrectTargetOwner(registrant);
         }
-        _unwrap(_makeNode(ETH_NODE, labelhash), controller);
+        _unwrap(_makeNode(TRX_NODE, labelhash), controller);
         registrar.safeTransferFrom(
             address(this),
             registrant,
@@ -441,7 +441,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Unwraps a non .eth domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
+     * @notice Unwraps a non .trx domain, of any kind. Could be a DNSSEC name vitalik.xyz or a subdomain
      * @dev Can be called by the owner in the wrapper or an authorised caller in the wrapper
      * @param parentNode Parent namehash of the name e.g. vitalik.xyz would be namehash('xyz')
      * @param labelhash Labelhash of the name, e.g. vitalik.xyz would be keccak256('vitalik')
@@ -453,7 +453,7 @@ contract NameWrapper is
         bytes32 labelhash,
         address controller
     ) public onlyTokenOwner(_makeNode(parentNode, labelhash)) {
-        if (parentNode == ETH_NODE) {
+        if (parentNode == TRX_NODE) {
             revert IncompatibleParent();
         }
         if (controller == address(0x0) || controller == address(this)) {
@@ -531,7 +531,7 @@ contract NameWrapper is
     }
 
     /**
-     * @notice Upgrades a domain of any kind. Could be a .eth name vitalik.eth, a DNSSEC name vitalik.xyz, or a subdomain
+     * @notice Upgrades a domain of any kind. Could be a .trx name vitalik.eth, a DNSSEC name vitalik.xyz, or a subdomain
      * @dev Can be called by the owner or an authorised caller
      * @param name The name to upgrade, in DNS format
      * @param extraData Extra data to pass to the upgrade contract
@@ -719,7 +719,7 @@ contract NameWrapper is
         ens.setRecord(node, address(this), resolver, ttl);
         if (owner == address(0)) {
             (, uint32 fuses, ) = getData(uint256(node));
-            if (fuses & IS_DOT_ETH == IS_DOT_ETH) {
+            if (fuses & IS_DOT_TRX == IS_DOT_TRX) {
                 revert IncorrectTargetOwner(owner);
             }
             _unwrap(node, address(0));
@@ -855,7 +855,7 @@ contract NameWrapper is
     ) public view returns (bool) {
         bytes32 node = _makeNode(parentNode, labelhash);
         bool wrapped = _isWrapped(node);
-        if (parentNode != ETH_NODE) {
+        if (parentNode != TRX_NODE) {
             return wrapped;
         }
         try registrar.ownerOf(uint256(labelhash)) returns (address owner) {
@@ -871,7 +871,7 @@ contract NameWrapper is
         uint256 tokenId,
         bytes calldata data
     ) public returns (bytes4) {
-        //check if it's the eth registrar ERC721
+        //check if it's the trx registrar ERC721
         if (msg.sender != address(registrar)) {
             revert IncorrectTokenType();
         }
@@ -907,8 +907,8 @@ contract NameWrapper is
         uint32 fuses,
         uint64 expiry
     ) internal override {
-        // For this check, treat .eth 2LDs as expiring at the start of the grace period.
-        if (fuses & IS_DOT_ETH == IS_DOT_ETH) {
+        // For this check, treat .trx 2LDs as expiring at the start of the grace period.
+        if (fuses & IS_DOT_TRX == IS_DOT_TRX) {
             expiry -= GRACE_PERIOD;
         }
 
@@ -1071,7 +1071,7 @@ contract NameWrapper is
         uint64 maxExpiry
     ) private pure returns (uint64) {
         // Expiry cannot be more than maximum allowed
-        // .eth names will check registrar, non .eth check parent
+        // .trx names will check registrar, non .trx check parent
         if (expiry > maxExpiry) {
             expiry = maxExpiry;
         }
@@ -1091,16 +1091,16 @@ contract NameWrapper is
         address resolver
     ) private {
         bytes32 labelhash = keccak256(bytes(label));
-        bytes32 node = _makeNode(ETH_NODE, labelhash);
-        // hardcode dns-encoded eth string for gas savings
-        bytes memory name = _addLabel(label, "\x03eth\x00");
+        bytes32 node = _makeNode(TRX_NODE, labelhash);
+        // hardcode dns-encoded trx string for gas savings
+        bytes memory name = _addLabel(label, "\x03trx\x00");
         names[node] = name;
 
         _wrap(
             node,
             name,
             wrappedOwner,
-            fuses | PARENT_CANNOT_CONTROL | IS_DOT_ETH,
+            fuses | PARENT_CANNOT_CONTROL | IS_DOT_TRX,
             expiry
         );
 
@@ -1174,7 +1174,7 @@ contract NameWrapper is
         uint64 expiry
     ) internal view returns (bool) {
         return
-            fuses & IS_DOT_ETH == IS_DOT_ETH &&
+            fuses & IS_DOT_TRX == IS_DOT_TRX &&
             expiry - GRACE_PERIOD < block.timestamp;
     }
 }

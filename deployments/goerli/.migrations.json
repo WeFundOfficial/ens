@@ -1,7 +1,8 @@
 {
-    "ens": 2086611,
-    "root": 2086752,
-    "registrar": 2086621,
-    "legacy-controller": 2086640,
-    "legacy-resolver": 2086614
+  "ens": 1692671968,
+  "root": 1692672231,
+  "setupRoot": 1692672279,
+  "legacy-resolver": 1692729193,
+  "legacy-controller": 1692729242,
+  "bulk-renewal": 1692729340
 }

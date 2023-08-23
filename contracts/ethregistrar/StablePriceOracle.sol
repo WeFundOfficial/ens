@@ -85,13 +85,13 @@ contract StablePriceOracle is IPriceOracle {
     }
 
     function attoUSDToWei(uint256 amount) internal view returns (uint256) {
-        uint256 ethPrice = uint256(usdOracle.latestAnswer());
-        return (amount * 1e8) / ethPrice;
+        uint256 trxPrice = uint256(usdOracle.latestAnswer());
+        return (amount * 1e8) / trxPrice;
     }
 
     function weiToAttoUSD(uint256 amount) internal view returns (uint256) {
-        uint256 ethPrice = uint256(usdOracle.latestAnswer());
-        return (amount * ethPrice) / 1e8;
+        uint256 trxPrice = uint256(usdOracle.latestAnswer());
+        return (amount * trxPrice) / 1e8;
     }
 
     function supportsInterface(
